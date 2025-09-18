@@ -1,16 +1,20 @@
 sequenceDiagram
-Client ->> Server: (req) GET / HTTP/1.1 OK
-Server ->> Client: (res) sendFile / index.html 
+  participant Client as Client
+  participant Server as Server
+  participant DB as DB
 
-Client ->> Server: (req) GET /boards HTTP/1.1 OK
-Server ->> DB: board-list 데이터 줘
-DB ->> Server: Params (리턴 데이터)
-Server ->> Client: (res) render(Params) / list.html (SSR)
+  Client ->> Server: (req) GET / HTTP/1.1
+  Server -->> Client: (res) HTTP/1.1 200 OK - sendFile / index.html
+  Client ->> Server: (req) GET /boards HTTP/1.1
+  Server ->> DB: board-list 데이터 줘
+  DB -->> Server: Params (리턴 데이터)
+  Server -->> Client: (res) GET /boards HTTP/1.1 200 OK - render(Params) / list.html (SSR)
+  Client ->> Server: (req) GET /write HTTP/1.1
+  Server -->> Client: (res) GET HTTP/1.1 200 OK - sendFile / write.html
+  Client ->> Client: 입력 폼 작성 후 Submit
+  Client ->> Server: POST /boards/write HTTP/1.1
+  Server ->> DB: INSERT INTO BOARDS (board.push)
+  DB -->> Server: Return code : 성공?
+  Server ->> Client: (res) redirect /board
 
-Client ->> Server: (req) GET /write HTTP/1.1 OK
-Server ->> Client: (res) sendFile / write.html 
-Client ->> Client : 입력 폼 작성 후 Submit
-Client ->> Server: POST /boards/write HTTP/1.1 OK
-Server ->> DB: INSERT INTO BOARDS (board.push)
 
-Server ->> Client: (res) redirect /board
