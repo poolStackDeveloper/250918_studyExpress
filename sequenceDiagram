@@ -15,6 +15,4 @@ sequenceDiagram
   Client ->> Server: POST /boards/write HTTP/1.1
   Server ->> DB: INSERT INTO BOARDS (board.push)
   DB -->> Server: Return code : 성공?
-  Server ->> Client: (res) 302 Found - redirect /board
-
-
+  Server -->> Client: (res) 302 Found - redirect /board
